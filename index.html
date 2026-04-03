@@ -72,6 +72,24 @@
     .search-select option { background: var(--black-soft); }
     .search-btn { background: var(--gold); border: none; color: var(--black); font-family: var(--sans); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 14px 28px; cursor: pointer; font-weight: 600; transition: background 0.2s; }
     .search-btn:hover { background: var(--gold-light); }
+    .autocomplete-wrapper { position: relative; flex: 1; display: flex; }
+    .autocomplete-dropdown {
+      display: none; position: absolute; top: 100%; left: 0; right: 0;
+      background: rgba(10,10,10,0.97); border: 1px solid rgba(201,168,76,0.35);
+      border-top: none; backdrop-filter: blur(16px);
+      max-height: 280px; overflow-y: auto; z-index: 200;
+    }
+    .autocomplete-dropdown.open { display: block; }
+    .autocomplete-item {
+      padding: 11px 20px; font-family: var(--sans); font-size: 0.78rem;
+      color: var(--white-dim); cursor: pointer; letter-spacing: 0.06em;
+      border-bottom: 1px solid rgba(201,168,76,0.08); transition: background 0.15s, color 0.15s;
+    }
+    .autocomplete-item:last-child { border-bottom: none; }
+    .autocomplete-item:hover, .autocomplete-item.active {
+      background: rgba(201,168,76,0.12); color: var(--gold);
+    }
+    .autocomplete-item strong { color: var(--gold); font-weight: 600; }
     .hero-scroll { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: fadeUp 0.9s 1.4s forwards; }
     .hero-scroll span { font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
     .scroll-line { width: 1px; height: 50px; background: linear-gradient(to bottom, var(--gold), transparent); animation: scrollPulse 2s ease-in-out infinite; }
@@ -242,7 +260,10 @@
       <button class="search-tab" onclick="setTab(this)">Arrendar</button>
       <button class="search-tab" onclick="setTab(this)">Comercial</button>
     </div>
-    <input class="search-input" type="text" placeholder="Ciudad, comuna o barrio..." />
+    <div class="autocomplete-wrapper">
+      <input class="search-input" id="searchInput" type="text" placeholder="Ciudad, comuna o barrio..." autocomplete="off" />
+      <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+    </div>
     <select class="search-select">
       <option>Tipo</option>
       <option>Casa</option>
@@ -251,7 +272,7 @@
       <option>Local</option>
       <option>Terreno</option>
     </select>
-    <button class="search-btn">Buscar</button>
+    <button class="search-btn" id="searchBtn">Buscar</button>
   </div>
   <div class="hero-scroll">
     <span>Explorar</span>
@@ -564,6 +585,91 @@
     document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
   }
+
+  // Autocomplete
+  const LUGARES = [
+    'Santiago','Las Condes','Providencia','Vitacura','Ñuñoa','La Florida',
+    'Maipú','Puente Alto','San Miguel','Lo Barnechea','Recoleta','Independencia',
+    'Quilicura','Peñalolén','La Reina','Macul','San Joaquín','Conchalí',
+    'El Bosque','La Pintana','Maitencillo','Zapallar','Cachagua',
+    'Viña del Mar','Valparaíso','Concepción','Puerto Montt','Antofagasta',
+    'Iquique','Temuco','Rancagua','Talca','La Serena','Coquimbo',
+    'Arica','Osorno','Chillán','Curicó','Punta Arenas','Valdivia',
+    'Los Ángeles','San Antonio','Coronel','Talcahuano','Los Andes'
+  ];
+
+  function normalize(str) {
+    return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function doSearch(query) {
+    if (!query.trim()) return;
+    window.location.href = 'propiedades.html?busqueda=' + encodeURIComponent(query.trim());
+  }
+
+  const searchInput = document.getElementById('searchInput');
+  const dropdown = document.getElementById('autocompleteDropdown');
+  let activeIndex = -1;
+
+  function renderDropdown(matches) {
+    if (!matches.length) { dropdown.classList.remove('open'); return; }
+    dropdown.innerHTML = matches.map((m, i) => {
+      const q = normalize(searchInput.value);
+      const norm = normalize(m);
+      const idx = norm.indexOf(q);
+      let display = m;
+      if (idx !== -1) {
+        display = m.slice(0, idx) + '<strong>' + m.slice(idx, idx + searchInput.value.length) + '</strong>' + m.slice(idx + searchInput.value.length);
+      }
+      return '<div class="autocomplete-item" data-val="' + m + '">' + display + '</div>';
+    }).join('');
+    activeIndex = -1;
+    dropdown.classList.add('open');
+    dropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+      item.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        doSearch(item.dataset.val);
+      });
+    });
+  }
+
+  searchInput.addEventListener('input', () => {
+    const val = searchInput.value.trim();
+    if (!val) { dropdown.classList.remove('open'); return; }
+    const norm = normalize(val);
+    const matches = LUGARES.filter(l => normalize(l).includes(norm)).slice(0, 8);
+    renderDropdown(matches);
+  });
+
+  searchInput.addEventListener('keydown', (e) => {
+    const items = dropdown.querySelectorAll('.autocomplete-item');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      activeIndex = Math.min(activeIndex + 1, items.length - 1);
+      items.forEach((it, i) => it.classList.toggle('active', i === activeIndex));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      activeIndex = Math.max(activeIndex - 1, -1);
+      items.forEach((it, i) => it.classList.toggle('active', i === activeIndex));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (activeIndex >= 0 && items[activeIndex]) {
+        doSearch(items[activeIndex].dataset.val);
+      } else {
+        doSearch(searchInput.value);
+      }
+    } else if (e.key === 'Escape') {
+      dropdown.classList.remove('open');
+    }
+  });
+
+  searchInput.addEventListener('blur', () => {
+    setTimeout(() => dropdown.classList.remove('open'), 150);
+  });
+
+  document.getElementById('searchBtn').addEventListener('click', () => {
+    doSearch(searchInput.value);
+  });
 
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {

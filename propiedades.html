@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Comprar & Arrendar — CCH Propiedades</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     :root {
       --black: #0a0a0a;
@@ -132,11 +134,25 @@
     /* MAIN LAYOUT */
     .main-layout {
       display: grid;
-      grid-template-columns: 1fr;
-      max-width: 1400px;
-      margin: 0 auto;
+      grid-template-columns: 1fr 1fr;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+      gap: 0;
+      align-items: start;
+    }
+    .props-col {
       padding: 40px 48px;
-      gap: 32px;
+      min-width: 0;
+    }
+    .map-col {
+      position: sticky;
+      top: 72px;
+      height: calc(100vh - 72px);
+    }
+    #map {
+      width: 100%;
+      height: 100%;
     }
 
     /* SORT BAR */
@@ -279,7 +295,9 @@
       nav { padding: 0 24px; }
       .nav-links, .nav-cta { display: none; }
       .page-header, .filters-row, .region-pills { padding-left: 24px; padding-right: 24px; }
-      .main-layout { padding: 24px; }
+      .main-layout { grid-template-columns: 1fr; }
+      .props-col { padding: 24px; }
+      .map-col { position: static; height: 300px; }
       .prop-grid { grid-template-columns: 1fr; }
       .offices-section { padding: 40px 24px; }
       .offices-grid { grid-template-columns: 1fr; }
@@ -379,6 +397,7 @@
 
 <!-- MAIN -->
 <div class="main-layout">
+<div class="props-col">
   <!-- SORT BAR -->
   <div class="sort-bar">
     <span class="sort-label">Mostrando 1–12 de 850 propiedades</span>
@@ -394,119 +413,6 @@
   <!-- PROP GRID -->
   <div class="prop-grid">
 
-    <div class="prop-card">
-      <div class="prop-img-wrap">
-        <img class="prop-img" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=700&q=80" alt="Casa Las Condes" loading="lazy" />
-        <span class="prop-tag tag-venta">Venta</span>
-        <div class="prop-fav">♡</div>
-      </div>
-      <div class="prop-body">
-        <div class="prop-location">Las Condes, Región Metropolitana</div>
-        <div class="prop-name">Luminosa casa con jardín en Las Condes</div>
-        <div class="prop-price">18.500 UF</div>
-        <div class="prop-specs">
-          <span class="prop-spec"><span class="spec-icon">⌂</span> Casa</span>
-          <span class="prop-spec"><span class="spec-icon">◉</span> 5 dorm.</span>
-          <span class="prop-spec"><span class="spec-icon">◎</span> 4 baños</span>
-          <span class="prop-spec"><span class="spec-icon">□</span> 320 m²</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="prop-card">
-      <div class="prop-img-wrap">
-        <img class="prop-img" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=700&q=80" alt="Depto Vitacura" loading="lazy" />
-        <span class="prop-tag tag-venta">Venta</span>
-        <div class="prop-fav">♡</div>
-      </div>
-      <div class="prop-body">
-        <div class="prop-location">Vitacura, Región Metropolitana</div>
-        <div class="prop-name">Departamento con vista despejada en Vitacura</div>
-        <div class="prop-price">9.200 UF</div>
-        <div class="prop-specs">
-          <span class="prop-spec"><span class="spec-icon">⌂</span> Depto.</span>
-          <span class="prop-spec"><span class="spec-icon">◉</span> 3 dorm.</span>
-          <span class="prop-spec"><span class="spec-icon">◎</span> 2 baños</span>
-          <span class="prop-spec"><span class="spec-icon">□</span> 140 m²</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="prop-card">
-      <div class="prop-img-wrap">
-        <img class="prop-img" src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=700&q=80" alt="Casa Viña" loading="lazy" />
-        <span class="prop-tag tag-arriendo">Arriendo</span>
-        <div class="prop-fav">♡</div>
-      </div>
-      <div class="prop-body">
-        <div class="prop-location">Viña del Mar, Valparaíso</div>
-        <div class="prop-name">Casa moderna con terraza y vista al mar</div>
-        <div class="prop-price">$2.800.000 / mes</div>
-        <div class="prop-specs">
-          <span class="prop-spec"><span class="spec-icon">⌂</span> Casa</span>
-          <span class="prop-spec"><span class="spec-icon">◉</span> 4 dorm.</span>
-          <span class="prop-spec"><span class="spec-icon">◎</span> 3 baños</span>
-          <span class="prop-spec"><span class="spec-icon">□</span> 220 m²</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="prop-card">
-      <div class="prop-img-wrap">
-        <img class="prop-img" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=700&q=80" alt="Oficina Providencia" loading="lazy" />
-        <span class="prop-tag tag-comercial">Comercial</span>
-        <div class="prop-fav">♡</div>
-      </div>
-      <div class="prop-body">
-        <div class="prop-location">Providencia, Región Metropolitana</div>
-        <div class="prop-name">Oficina ejecutiva en edificio clase A</div>
-        <div class="prop-price">5.400 UF</div>
-        <div class="prop-specs">
-          <span class="prop-spec"><span class="spec-icon">⌂</span> Oficina</span>
-          <span class="prop-spec"><span class="spec-icon">◉</span> 4 ambientes</span>
-          <span class="prop-spec"><span class="spec-icon">□</span> 95 m²</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="prop-card">
-      <div class="prop-img-wrap">
-        <img class="prop-img" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80" alt="Casa Maitencillo" loading="lazy" />
-        <span class="prop-tag tag-venta">Venta</span>
-        <div class="prop-fav">♡</div>
-      </div>
-      <div class="prop-body">
-        <div class="prop-location">Maitencillo, Valparaíso</div>
-        <div class="prop-name">Casa campestre en condominio cerrado</div>
-        <div class="prop-price">12.000 UF</div>
-        <div class="prop-specs">
-          <span class="prop-spec"><span class="spec-icon">⌂</span> Casa</span>
-          <span class="prop-spec"><span class="spec-icon">◉</span> 4 dorm.</span>
-          <span class="prop-spec"><span class="spec-icon">◎</span> 3 baños</span>
-          <span class="prop-spec"><span class="spec-icon">□</span> 180 m²</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="prop-card">
-      <div class="prop-img-wrap">
-        <img class="prop-img" src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=700&q=80" alt="Casa Lo Barnechea" loading="lazy" />
-        <span class="prop-tag tag-venta">Venta</span>
-        <div class="prop-fav">♡</div>
-      </div>
-      <div class="prop-body">
-        <div class="prop-location">Lo Barnechea, Región Metropolitana</div>
-        <div class="prop-name">Casa con amplio jardín en Lo Barnechea</div>
-        <div class="prop-price">23.800 UF</div>
-        <div class="prop-specs">
-          <span class="prop-spec"><span class="spec-icon">⌂</span> Casa</span>
-          <span class="prop-spec"><span class="spec-icon">◉</span> 5 dorm.</span>
-          <span class="prop-spec"><span class="spec-icon">◎</span> 4 baños</span>
-          <span class="prop-spec"><span class="spec-icon">□</span> 380 m²</span>
-        </div>
-      </div>
-    </div>
-
     <!-- SAVE SEARCH BANNER -->
     <div class="save-banner" style="grid-column: 1 / -1;">
       <div>
@@ -514,120 +420,6 @@
         <div class="save-banner-sub">Guarda tu búsqueda y recibe alertas de nuevas propiedades que coincidan.</div>
       </div>
       <button class="save-btn">Guardar búsqueda</button>
-    </div>
-
-    <div class="prop-card">
-      <div class="prop-img-wrap">
-        <img class="prop-img" src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=700&q=80" alt="Depto Santiago" loading="lazy" />
-        <span class="prop-tag tag-arriendo">Arriendo</span>
-        <div class="prop-fav">♡</div>
-      </div>
-      <div class="prop-body">
-        <div class="prop-location">Lastarria, Santiago</div>
-        <div class="prop-name">Departamento amoblado con vista despejada</div>
-        <div class="prop-price">$1.650.000 / mes</div>
-        <div class="prop-specs">
-          <span class="prop-spec"><span class="spec-icon">⌂</span> Depto.</span>
-          <span class="prop-spec"><span class="spec-icon">◉</span> 2 dorm.</span>
-          <span class="prop-spec"><span class="spec-icon">◎</span> 2 baños</span>
-          <span class="prop-spec"><span class="spec-icon">□</span> 65 m²</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="prop-card">
-      <div class="prop-img-wrap">
-        <img class="prop-img" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=700&q=80" alt="Casa Valparaíso" loading="lazy" />
-        <span class="prop-tag tag-venta">Venta</span>
-        <div class="prop-fav">♡</div>
-      </div>
-      <div class="prop-body">
-        <div class="prop-location">Valparaíso, V Región</div>
-        <div class="prop-name">Casa patrimonial restaurada en Cerro Alegre</div>
-        <div class="prop-price">7.500 UF</div>
-        <div class="prop-specs">
-          <span class="prop-spec"><span class="spec-icon">⌂</span> Casa</span>
-          <span class="prop-spec"><span class="spec-icon">◉</span> 3 dorm.</span>
-          <span class="prop-spec"><span class="spec-icon">◎</span> 2 baños</span>
-          <span class="prop-spec"><span class="spec-icon">□</span> 160 m²</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="prop-card">
-      <div class="prop-img-wrap">
-        <img class="prop-img" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=700&q=80" alt="Parcela Chicureo" loading="lazy" />
-        <span class="prop-tag tag-venta">Venta</span>
-        <div class="prop-fav">♡</div>
-      </div>
-      <div class="prop-body">
-        <div class="prop-location">Chicureo, Región Metropolitana</div>
-        <div class="prop-name">Parcela con casa campestre en Chicureo</div>
-        <div class="prop-price">20.800 UF</div>
-        <div class="prop-specs">
-          <span class="prop-spec"><span class="spec-icon">⌂</span> Parcela</span>
-          <span class="prop-spec"><span class="spec-icon">◉</span> 3 dorm.</span>
-          <span class="prop-spec"><span class="spec-icon">◎</span> 3 baños</span>
-          <span class="prop-spec"><span class="spec-icon">□</span> 5.165 m²</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="prop-card">
-      <div class="prop-img-wrap">
-        <img class="prop-img" src="https://images.unsplash.com/photo-1433838552652-f9a46b332c40?w=700&q=80" alt="Casa Puerto Montt" loading="lazy" />
-        <span class="prop-tag tag-venta">Venta</span>
-        <div class="prop-fav">♡</div>
-      </div>
-      <div class="prop-body">
-        <div class="prop-location">Puerto Varas, Los Lagos</div>
-        <div class="prop-name">Casa con vista al lago y Volcán Osorno</div>
-        <div class="prop-price">15.200 UF</div>
-        <div class="prop-specs">
-          <span class="prop-spec"><span class="spec-icon">⌂</span> Casa</span>
-          <span class="prop-spec"><span class="spec-icon">◉</span> 4 dorm.</span>
-          <span class="prop-spec"><span class="spec-icon">◎</span> 3 baños</span>
-          <span class="prop-spec"><span class="spec-icon">□</span> 240 m²</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="prop-card">
-      <div class="prop-img-wrap">
-        <img class="prop-img" src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=700&q=80" alt="Depto Ñuñoa" loading="lazy" />
-        <span class="prop-tag tag-arriendo">Arriendo</span>
-        <div class="prop-fav">♡</div>
-      </div>
-      <div class="prop-body">
-        <div class="prop-location">Ñuñoa, Región Metropolitana</div>
-        <div class="prop-name">Departamento luminoso cerca del metro</div>
-        <div class="prop-price">$1.200.000 / mes</div>
-        <div class="prop-specs">
-          <span class="prop-spec"><span class="spec-icon">⌂</span> Depto.</span>
-          <span class="prop-spec"><span class="spec-icon">◉</span> 2 dorm.</span>
-          <span class="prop-spec"><span class="spec-icon">◎</span> 1 baño</span>
-          <span class="prop-spec"><span class="spec-icon">□</span> 58 m²</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="prop-card">
-      <div class="prop-img-wrap">
-        <img class="prop-img" src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=700&q=80" alt="Casa La Serena" loading="lazy" />
-        <span class="prop-tag tag-venta">Venta</span>
-        <div class="prop-fav">♡</div>
-      </div>
-      <div class="prop-body">
-        <div class="prop-location">La Serena, Coquimbo</div>
-        <div class="prop-name">Casa frente al mar en Avenida del Pacífico</div>
-        <div class="prop-price">13.800 UF</div>
-        <div class="prop-specs">
-          <span class="prop-spec"><span class="spec-icon">⌂</span> Casa</span>
-          <span class="prop-spec"><span class="spec-icon">◉</span> 6 dorm.</span>
-          <span class="prop-spec"><span class="spec-icon">◎</span> 4 baños</span>
-          <span class="prop-spec"><span class="spec-icon">□</span> 368 m²</span>
-        </div>
-      </div>
     </div>
 
   </div>
@@ -643,7 +435,9 @@
     <button class="page-btn">71</button>
     <button class="page-btn">›</button>
   </div>
-</div>
+</div><!-- /props-col -->
+<div class="map-col"><div id="map"></div></div>
+</div><!-- /main-layout -->
 
 <!-- OFFICES -->
 <div class="offices-section">
@@ -743,6 +537,14 @@
       this.classList.add('active');
     });
   });
+</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const map = L.map('map').setView([-33.45, -70.66], 11);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    maxZoom: 19
+  }).addTo(map);
 </script>
 </body>
 </html>

@@ -602,25 +602,34 @@
     el.classList.add('active');
   }
 
-  // Autocomplete
-  const LUGARES = [
-    'Santiago','Las Condes','Providencia','Vitacura','Ñuñoa','La Florida',
-    'Maipú','Puente Alto','San Miguel','Lo Barnechea','Recoleta','Independencia',
-    'Quilicura','Peñalolén','La Reina','Macul','San Joaquín','Conchalí',
-    'El Bosque','La Pintana','Maitencillo','Zapallar','Cachagua',
-    'Viña del Mar','Valparaíso','Concepción','Puerto Montt','Antofagasta',
-    'Iquique','Temuco','Rancagua','Talca','La Serena','Coquimbo',
-    'Arica','Osorno','Chillán','Curicó','Punta Arenas','Valdivia',
-    'Los Ángeles','San Antonio','Coronel','Talcahuano','Los Andes'
-  ];
+  // Autocomplete — built from real property locations
+  function buildLugares() {
+    if (typeof PROPS_DATA === 'undefined') return [];
+    const set = new Set();
+    PROPS_DATA.forEach(p => {
+      // Extract parts: "Asturias 178, Las Condes" → ["Asturias 178", "Las Condes"]
+      // Also add ciudad
+      set.add(p.ciudad);
+      p.loc.split(',').forEach(part => {
+        const clean = part.trim().replace(/^[0-9-s]+/, '').trim();
+        if (clean.length > 2) set.add(clean);
+      });
+    });
+    return [...set].sort();
+  }
+  const LUGARES = buildLugares();
 
   function normalize(str) {
     return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
 
   function doSearch(query) {
-    if (!query.trim()) return;
-    window.location.href = 'propiedades.html?busqueda=' + encodeURIComponent(query.trim());
+    const activeTab = document.querySelector('.search-tab.active');
+    const mode = activeTab ? activeTab.textContent.trim() : 'Comprar';
+    const params = new URLSearchParams();
+    if (query.trim()) params.set('busqueda', query.trim());
+    params.set('modo', mode);
+    window.location.href = 'propiedades.html?' + params.toString();
   }
 
   const searchInput = document.getElementById('searchInput');

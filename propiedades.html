@@ -876,6 +876,31 @@
   });
 
   applyFilters();
+
+  // ── READ URL PARAMS AND APPLY ON LOAD ─────────────────────────────────────
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    const modo = params.get('modo');
+    const busqueda = params.get('busqueda');
+
+    if (modo) {
+      const tabs = document.querySelectorAll('.filter-tab');
+      tabs.forEach(t => {
+        if (t.textContent.trim() === modo) {
+          t.click();
+        }
+      });
+    }
+
+    if (busqueda) {
+      const input = document.getElementById('search-input');
+      if (input) {
+        input.value = busqueda;
+        state.q = busqueda.toLowerCase();
+        applyFilters();
+      }
+    }
+  })();
 </script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>

@@ -596,33 +596,33 @@
   </div>
 </footer>
 
+<script src="properties-data.js"></script>
 <script>
+  // ── TABS ───────────────────────────────────────────────────────────────────
   function setTab(el) {
     document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
   }
 
-  // Autocomplete — built from real property locations
+  // ── BUILD LUGARES FROM REAL DATA ───────────────────────────────────────────
   function buildLugares() {
     if (typeof PROPS_DATA === 'undefined') return [];
     const set = new Set();
     PROPS_DATA.forEach(p => {
-      // Extract parts: "Asturias 178, Las Condes" → ["Asturias 178", "Las Condes"]
-      // Also add ciudad
+      // Add ciudad (Santiago, Zapallar)
       set.add(p.ciudad);
-      p.loc.split(',').forEach(part => {
-        const clean = part.trim().replace(/^[0-9-s]+/, '').trim();
-        if (clean.length > 2) set.add(clean);
+      // Parse loc: "Av. Apoquindo 4501, Las Condes" → add "Las Condes"
+      const parts = p.loc.split(',');
+      parts.forEach((part, i) => {
+        const clean = part.trim().replace(/^[ds-.]+/, '').trim();
+        // Skip street numbers/short strings, keep commune-like parts
+        if (clean.length > 3 && !/^d/.test(clean)) set.add(clean);
       });
     });
-    return [...set].sort();
-  }
-  const LUGARES = buildLugares();
-
-  function normalize(str) {
-    return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return [...set].sort((a,b) => a.localeCompare(b, 'es'));
   }
 
+  // ── SEARCH + REDIRECT ──────────────────────────────────────────────────────
   function doSearch(query) {
     const activeTab = document.querySelector('.search-tab.active');
     const mode = activeTab ? activeTab.textContent.trim() : 'Comprar';
@@ -632,26 +632,34 @@
     window.location.href = 'propiedades.html?' + params.toString();
   }
 
+  // ── AUTOCOMPLETE ───────────────────────────────────────────────────────────
+  function normalize(str) {
+    return str.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  }
+
   const searchInput = document.getElementById('searchInput');
-  const dropdown = document.getElementById('autocompleteDropdown');
-  let activeIndex = -1;
+  const dropdown    = document.getElementById('autocompleteDropdown');
+  let activeIndex   = -1;
+  const LUGARES     = buildLugares();
 
   function renderDropdown(matches) {
     if (!matches.length) { dropdown.classList.remove('open'); return; }
-    dropdown.innerHTML = matches.map((m, i) => {
-      const q = normalize(searchInput.value);
+    const q = normalize(searchInput.value);
+    dropdown.innerHTML = matches.map(m => {
       const norm = normalize(m);
-      const idx = norm.indexOf(q);
+      const i    = norm.indexOf(q);
       let display = m;
-      if (idx !== -1) {
-        display = m.slice(0, idx) + '<strong>' + m.slice(idx, idx + searchInput.value.length) + '</strong>' + m.slice(idx + searchInput.value.length);
+      if (i !== -1) {
+        display = m.slice(0, i)
+          + '<strong style="color:var(--gold)">' + m.slice(i, i + searchInput.value.length) + '</strong>'
+          + m.slice(i + searchInput.value.length);
       }
       return '<div class="autocomplete-item" data-val="' + m + '">' + display + '</div>';
     }).join('');
     activeIndex = -1;
     dropdown.classList.add('open');
     dropdown.querySelectorAll('.autocomplete-item').forEach(item => {
-      item.addEventListener('mousedown', (e) => {
+      item.addEventListener('mousedown', e => {
         e.preventDefault();
         doSearch(item.dataset.val);
       });
@@ -661,12 +669,12 @@
   searchInput.addEventListener('input', () => {
     const val = searchInput.value.trim();
     if (!val) { dropdown.classList.remove('open'); return; }
-    const norm = normalize(val);
+    const norm    = normalize(val);
     const matches = LUGARES.filter(l => normalize(l).includes(norm)).slice(0, 8);
     renderDropdown(matches);
   });
 
-  searchInput.addEventListener('keydown', (e) => {
+  searchInput.addEventListener('keydown', e => {
     const items = dropdown.querySelectorAll('.autocomplete-item');
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -696,6 +704,16 @@
     doSearch(searchInput.value);
   });
 
+  // ── STATS ──────────────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof PROPS_DATA === 'undefined') return;
+    const el_p = document.getElementById('stat-propiedades');
+    const el_c = document.getElementById('stat-ciudades');
+    if (el_p) el_p.textContent = PROPS_DATA.length;
+    if (el_c) el_c.textContent = new Set(PROPS_DATA.map(p => p.ciudad)).size;
+  });
+
+  // ── SCROLL REVEAL ──────────────────────────────────────────────────────────
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
@@ -708,15 +726,6 @@
     const nav = document.querySelector('nav');
     nav.style.background = window.scrollY > 60 ? 'rgba(10,10,10,0.98)' : 'rgba(10,10,10,0.92)';
   });
-  // Dynamic stats from PROPS_DATA
-  document.addEventListener('DOMContentLoaded', function() {
-    if (typeof PROPS_DATA === 'undefined') return;
-    const el_p = document.getElementById('stat-propiedades');
-    const el_c = document.getElementById('stat-ciudades');
-    if (el_p) el_p.textContent = PROPS_DATA.length;
-    if (el_c) el_c.textContent = new Set(PROPS_DATA.map(p => p.ciudad)).size;
-  });
 </script>
-<script src="properties-data.js"></script>
 </body>
 </html>

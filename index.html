@@ -596,7 +596,6 @@
   </div>
 </footer>
 
-<script src="properties-data.js"></script>
 <script>
   // ── TABS ───────────────────────────────────────────────────────────────────
   function setTab(el) {
@@ -609,13 +608,9 @@
     if (typeof PROPS_DATA === 'undefined') return [];
     const set = new Set();
     PROPS_DATA.forEach(p => {
-      // Add ciudad (Santiago, Zapallar)
       set.add(p.ciudad);
-      // Parse loc: "Av. Apoquindo 4501, Las Condes" → add "Las Condes"
-      const parts = p.loc.split(',');
-      parts.forEach((part, i) => {
+      p.loc.split(',').forEach(part => {
         const clean = part.trim().replace(/^[ds-.]+/, '').trim();
-        // Skip street numbers/short strings, keep commune-like parts
         if (clean.length > 3 && !/^d/.test(clean)) set.add(clean);
       });
     });
@@ -705,13 +700,12 @@
   });
 
   // ── STATS ──────────────────────────────────────────────────────────────────
-  document.addEventListener('DOMContentLoaded', function() {
-    if (typeof PROPS_DATA === 'undefined') return;
+  if (typeof PROPS_DATA !== 'undefined') {
     const el_p = document.getElementById('stat-propiedades');
     const el_c = document.getElementById('stat-ciudades');
     if (el_p) el_p.textContent = PROPS_DATA.length;
     if (el_c) el_c.textContent = new Set(PROPS_DATA.map(p => p.ciudad)).size;
-  });
+  }
 
   // ── SCROLL REVEAL ──────────────────────────────────────────────────────────
   const reveals = document.querySelectorAll('.reveal');
@@ -727,5 +721,6 @@
     nav.style.background = window.scrollY > 60 ? 'rgba(10,10,10,0.98)' : 'rgba(10,10,10,0.92)';
   });
 </script>
+<script src="properties-data.js"></script>
 </body>
 </html>

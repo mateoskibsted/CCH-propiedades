@@ -6,7 +6,6 @@
   <title>Comprar & Arrendar — CCH Propiedades</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     :root {
       --black: #0a0a0a;
@@ -351,7 +350,7 @@
 
 <!-- FILTERS ROW -->
 <div class="filters-row">
-  <input class="filter-input" type="text" placeholder="Ciudad, comuna o barrio..." />
+  <input id="search-input" class="filter-input" type="text" placeholder="Ciudad, comuna o barrio..." />
   <select class="filter-select">
     <option value="">Tipo de propiedad</option>
     <option>Casa</option>
@@ -386,21 +385,12 @@
     <option>5+</option>
   </select>
   <button class="filter-btn">Buscar</button>
-  <button class="filter-btn-outline">Limpiar</button>
-  <span class="filter-count">850 resultados</span>
+  <button id="btn-limpiar" class="filter-btn-outline">Limpiar</button>
+  <span class="filter-count" id="filter-count-live">20 resultados</span>
 </div>
 
 <!-- REGION PILLS -->
-<div class="region-pills">
-  <a href="#" class="region-pill active">Todo Chile</a>
-  <a href="#" class="region-pill">Región Metropolitana</a>
-  <a href="#" class="region-pill">Valparaíso</a>
-  <a href="#" class="region-pill">Biobío</a>
-  <a href="#" class="region-pill">Araucanía</a>
-  <a href="#" class="region-pill">Los Lagos</a>
-  <a href="#" class="region-pill">Coquimbo</a>
-  <a href="#" class="region-pill">O'Higgins</a>
-</div>
+<div id="region-pills-container" class="region-pills"></div>
 
 <!-- MAIN -->
 <div class="main-layout">
@@ -420,7 +410,7 @@
   <!-- PROP GRID -->
   <div class="prop-grid">
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Venta" data-tipo="Oficina" data-loc="Asturias 178, Las Condes" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=700&q=80" alt="Casa Oficina Pasos Metro Escuela Militar" loading="lazy" />
         <span class="prop-tag tag-venta">Venta</span>
@@ -435,7 +425,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Venta" data-tipo="Depto" data-loc="Cam. Real, Lo Barnechea" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=700&q=80" alt="Remodelado Camino Real Los Trapenses" loading="lazy" />
         <span class="prop-tag tag-venta">Venta</span>
@@ -450,7 +440,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Venta" data-tipo="Oficina" data-loc="Santa María de Manquehue, Vitacura" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=700&q=80" alt="Oficina Nueva Edificio Transoceánica" loading="lazy" />
         <span class="prop-tag tag-venta">Venta</span>
@@ -465,7 +455,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Venta" data-tipo="Casa" data-loc="Cam. Bosques del Polo, Vitacura" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=700&q=80" alt="Increíble Casa Vista Club de Golf del Polo" loading="lazy" />
         <span class="prop-tag tag-venta">Venta</span>
@@ -480,7 +470,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Venta" data-tipo="Depto" data-loc="Parque Antonio Rabat 6390, Vitacura" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=700&q=80" alt="Gran Departamento Santa María Manquehue" loading="lazy" />
         <span class="prop-tag tag-venta">Venta</span>
@@ -495,7 +485,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Venta" data-tipo="Depto" data-loc="Hamlet, Las Condes" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=700&q=80" alt="Departamento Hamlet Metro Escuela Militar" loading="lazy" />
         <span class="prop-tag tag-venta">Venta</span>
@@ -510,7 +500,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Venta" data-tipo="Casa" data-loc="Del Cerrillo, Cachagua, Zapallar" data-region="Valparaíso">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=700&q=80" alt="Casa Pueblo Cachagua Impecable" loading="lazy" />
         <span class="prop-tag tag-venta">Venta</span>
@@ -525,7 +515,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Venta" data-tipo="Oficina" data-loc="Rosario Sur 310, Las Condes" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=700&q=80" alt="Oportunidad Casa Comercial Metro Manquehue" loading="lazy" />
         <span class="prop-tag tag-venta">Venta</span>
@@ -540,7 +530,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Venta" data-tipo="Depto" data-loc="Cam. Real 3663, Lo Barnechea" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=700&q=80" alt="Townhouse Camino Real Los Trapenses" loading="lazy" />
         <span class="prop-tag tag-venta">Venta</span>
@@ -555,7 +545,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Venta" data-tipo="Casa" data-loc="Cam. Punta de Águila 4371, Lo Barnechea" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80" alt="Casa Mediterránea Los Trapenses Linda Vista" loading="lazy" />
         <span class="prop-tag tag-venta">Venta</span>
@@ -570,7 +560,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Venta" data-tipo="Casa" data-loc="El Magnolio 1519, Vitacura" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=700&q=80" alt="Linda Casa Estilo Inglés en Condominio" loading="lazy" />
         <span class="prop-tag tag-venta">Venta</span>
@@ -585,7 +575,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Venta" data-tipo="Depto" data-loc="Av. Santa María 0346, Providencia" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=700&q=80" alt="Departamento Bellavista Providencia" loading="lazy" />
         <span class="prop-tag tag-venta">Venta</span>
@@ -600,7 +590,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Venta" data-tipo="Depto" data-loc="Costanera Sur, Vitacura" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=700&q=80" alt="Dúplex Remodelado Super Moderno y Luminoso" loading="lazy" />
         <span class="prop-tag tag-venta">Venta</span>
@@ -615,7 +605,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Arriendo" data-tipo="Depto" data-loc="Concordia 2245, Providencia" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=700&q=80" alt="Moderno Departamento Mariposa Lyon" loading="lazy" />
         <span class="prop-tag tag-arriendo">Arriendo</span>
@@ -630,7 +620,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Venta" data-tipo="Depto" data-loc="Carmen Sylva 2400, Providencia" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=700&q=80" alt="Buen Departamento Carmen Silva Providencia" loading="lazy" />
         <span class="prop-tag tag-venta">Venta</span>
@@ -645,7 +635,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Arriendo" data-tipo="Local" data-loc="Las Tranqueras 1594, Vitacura" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=700&q=80" alt="Local Las Tranqueras Gran Terraza" loading="lazy" />
         <span class="prop-tag tag-arriendo">Arriendo</span>
@@ -660,7 +650,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Arriendo" data-tipo="Oficina" data-loc="Juan B. Pastene 2965, Vitacura" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=700&q=80" alt="Oficinas y Talleres Nueva Costanera" loading="lazy" />
         <span class="prop-tag tag-arriendo">Arriendo</span>
@@ -675,7 +665,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Arriendo Temporal" data-tipo="Casa" data-loc="Cachagua, Zapallar" data-region="Valparaíso">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=700&q=80" alt="Casa Cachagua a 800 Metros Playa Grande" loading="lazy" />
         <span class="prop-tag tag-arriendo">Arriendo Temp.</span>
@@ -690,7 +680,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Venta" data-tipo="Depto" data-loc="Paul Claudel 1125, Vitacura" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=700&q=80" alt="Elegante Depto Vista Club de Golf Los Leones" loading="lazy" />
         <span class="prop-tag tag-venta">Venta</span>
@@ -705,7 +695,7 @@
       </div>
     </div>
 
-    <div class="prop-card">
+    <div class="prop-card" data-op="Venta" data-tipo="Terreno" data-loc="Álvaro Casanova 4812, Peñalolén" data-region="Región Metropolitana">
       <div class="prop-img-wrap">
         <img class="prop-img" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=700&q=80" alt="Espectacular Terreno con Anteproyecto" loading="lazy" />
         <span class="prop-tag tag-venta">Venta</span>
@@ -718,6 +708,12 @@
         <div class="prop-specs"><span class="prop-spec"><span class="spec-icon">⌂</span> Terreno</span><span class="prop-spec"><span class="spec-icon">□</span> 9.896 m²</span></div>
         <a href="https://www.portalinmobiliario.com/MLC-2926526120-espectacular-terreno-con-ante-proyecto-de-arquitectura-_JM" target="_blank" rel="noopener" class="prop-link">Ver publicación →</a>
       </div>
+    </div>
+
+    <div id="no-results" style="display:none;grid-column:1/-1;flex-direction:column;align-items:center;justify-content:center;padding:64px 24px;gap:14px;text-align:center;">
+      <div style="font-family:var(--serif);font-size:1.6rem;font-weight:300;color:var(--white);">Sin resultados</div>
+      <div style="font-size:0.7rem;letter-spacing:0.12em;color:var(--white-dim);">No encontramos propiedades con estos filtros.</div>
+      <button onclick="document.getElementById('btn-limpiar').click()" style="margin-top:12px;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;padding:10px 24px;border:1px solid rgba(201,168,76,0.3);color:var(--gold);background:transparent;cursor:pointer;font-family:var(--sans);">Limpiar filtros</button>
     </div>
 
     <!-- SAVE SEARCH BANNER -->
@@ -814,35 +810,252 @@
 </footer>
 
 <script>
+  // ── PROPERTY DATA ──────────────────────────────────────────────────────────
+  const PROPS = [
+  {
+    "name": "Casa Oficina Pasos Metro Escuela Militar",
+    "op": "Venta",
+    "tipo": "Oficina",
+    "loc": "Asturias 178, Las Condes",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Remodelado Camino Real Los Trapenses",
+    "op": "Venta",
+    "tipo": "Depto",
+    "loc": "Cam. Real, Lo Barnechea",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Oficina Nueva Edificio Transoceánica",
+    "op": "Venta",
+    "tipo": "Oficina",
+    "loc": "Santa María de Manquehue, Vitacura",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Increíble Casa Vista Club de Golf del Polo",
+    "op": "Venta",
+    "tipo": "Casa",
+    "loc": "Cam. Bosques del Polo, Vitacura",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Gran Departamento Santa María Manquehue",
+    "op": "Venta",
+    "tipo": "Depto",
+    "loc": "Parque Antonio Rabat 6390, Vitacura",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Departamento Hamlet Metro Escuela Militar",
+    "op": "Venta",
+    "tipo": "Depto",
+    "loc": "Hamlet, Las Condes",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Casa Pueblo Cachagua Impecable",
+    "op": "Venta",
+    "tipo": "Casa",
+    "loc": "Del Cerrillo, Cachagua, Zapallar",
+    "region": "Valparaíso"
+  },
+  {
+    "name": "Oportunidad Casa Comercial Metro Manquehue",
+    "op": "Venta",
+    "tipo": "Oficina",
+    "loc": "Rosario Sur 310, Las Condes",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Townhouse Camino Real Los Trapenses",
+    "op": "Venta",
+    "tipo": "Depto",
+    "loc": "Cam. Real 3663, Lo Barnechea",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Casa Mediterránea Los Trapenses Linda Vista",
+    "op": "Venta",
+    "tipo": "Casa",
+    "loc": "Cam. Punta de Águila 4371, Lo Barnechea",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Linda Casa Estilo Inglés en Condominio",
+    "op": "Venta",
+    "tipo": "Casa",
+    "loc": "El Magnolio 1519, Vitacura",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Departamento Bellavista Providencia",
+    "op": "Venta",
+    "tipo": "Depto",
+    "loc": "Av. Santa María 0346, Providencia",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Dúplex Remodelado Super Moderno y Luminoso",
+    "op": "Venta",
+    "tipo": "Depto",
+    "loc": "Costanera Sur, Vitacura",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Moderno Departamento Mariposa Lyon",
+    "op": "Arriendo",
+    "tipo": "Depto",
+    "loc": "Concordia 2245, Providencia",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Buen Departamento Carmen Silva Providencia",
+    "op": "Venta",
+    "tipo": "Depto",
+    "loc": "Carmen Sylva 2400, Providencia",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Local Las Tranqueras Gran Terraza",
+    "op": "Arriendo",
+    "tipo": "Local",
+    "loc": "Las Tranqueras 1594, Vitacura",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Oficinas y Talleres Nueva Costanera",
+    "op": "Arriendo",
+    "tipo": "Oficina",
+    "loc": "Juan B. Pastene 2965, Vitacura",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Casa Cachagua a 800 Metros Playa Grande",
+    "op": "Arriendo Temporal",
+    "tipo": "Casa",
+    "loc": "Cachagua, Zapallar",
+    "region": "Valparaíso"
+  },
+  {
+    "name": "Elegante Depto Vista Club de Golf Los Leones",
+    "op": "Venta",
+    "tipo": "Depto",
+    "loc": "Paul Claudel 1125, Vitacura",
+    "region": "Región Metropolitana"
+  },
+  {
+    "name": "Espectacular Terreno con Anteproyecto",
+    "op": "Venta",
+    "tipo": "Terreno",
+    "loc": "Álvaro Casanova 4812, Peñalolén",
+    "region": "Región Metropolitana"
+  }
+];
+
+  // ── BUILD REGION PILLS DYNAMICALLY ────────────────────────────────────────
+  const uniqueRegions = ['Todo Chile', ...new Set(PROPS.map(p => p.region))];
+  const pillsContainer = document.getElementById('region-pills-container');
+  uniqueRegions.forEach(region => {
+    const a = document.createElement('a');
+    a.href = '#';
+    a.className = 'region-pill' + (region === 'Todo Chile' ? ' active' : '');
+    a.textContent = region;
+    a.addEventListener('click', e => { e.preventDefault(); setRegion(region, a); });
+    pillsContainer.appendChild(a);
+  });
+
+  // ── STATE ──────────────────────────────────────────────────────────────────
+  const state = { mode: 'Comprar', region: 'Todo Chile', q: '' };
+
+  // ── FILTER & RENDER ────────────────────────────────────────────────────────
+  function applyFilters() {
+    const cards = document.querySelectorAll('.prop-card[data-op]');
+    let visible = 0;
+
+    cards.forEach(card => {
+      const op     = card.dataset.op;
+      const tipo   = card.dataset.tipo;
+      const loc    = card.dataset.loc.toLowerCase();
+      const region = card.dataset.region;
+
+      let modeOk = false;
+      if (state.mode === 'Comprar')   modeOk = op === 'Venta';
+      if (state.mode === 'Arrendar')  modeOk = op === 'Arriendo' || op === 'Arriendo Temporal';
+      if (state.mode === 'Comercial') modeOk = tipo === 'Oficina' || tipo === 'Local';
+
+      const regionOk = state.region === 'Todo Chile' || region === state.region;
+      const qOk      = !state.q || loc.includes(state.q);
+
+      const show = modeOk && regionOk && qOk;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    // Update counters
+    const labels = { Comprar: 'en venta', Arrendar: 'en arriendo', Comercial: 'comerciales' };
+    document.getElementById('result-count').textContent =
+      visible + ' propiedad' + (visible !== 1 ? 'es' : '') + ' ' + (labels[state.mode] || '');
+    document.getElementById('filter-count-live').textContent =
+      visible + ' resultado' + (visible !== 1 ? 's' : '');
+
+    // Sort bar label
+    const sortLabel = document.querySelector('.sort-label');
+    if (sortLabel) sortLabel.textContent = 'Mostrando ' + visible + ' propiedad' + (visible !== 1 ? 'es' : '');
+
+    // No-results message
+    const noRes = document.getElementById('no-results');
+    noRes.style.display = visible === 0 ? 'flex' : 'none';
+
+    // Save banner: hide when no results
+    const banner = document.querySelector('.save-banner');
+    if (banner) banner.style.display = visible === 0 ? 'none' : '';
+  }
+
+  // ── TAB HANDLER ────────────────────────────────────────────────────────────
   function setMode(el, mode) {
     document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
-    const counts = { 'Comprar': '650 propiedades en venta', 'Arrendar': '200 propiedades en arriendo', 'Comercial': '85 propiedades comerciales' };
-    document.getElementById('result-count').textContent = counts[mode] || '850 propiedades disponibles';
+    state.mode = mode;
+    applyFilters();
   }
 
-  document.querySelectorAll('.region-pill').forEach(pill => {
-    pill.addEventListener('click', function(e) {
-      e.preventDefault();
-      document.querySelectorAll('.region-pill').forEach(p => p.classList.remove('active'));
-      this.classList.add('active');
-    });
+  // ── REGION HANDLER ─────────────────────────────────────────────────────────
+  function setRegion(region, el) {
+    document.querySelectorAll('.region-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    state.region = region;
+    applyFilters();
+  }
+
+  // ── SEARCH ─────────────────────────────────────────────────────────────────
+  document.getElementById('search-input').addEventListener('input', function () {
+    state.q = this.value.trim().toLowerCase();
+    applyFilters();
   });
 
+  // ── LIMPIAR ────────────────────────────────────────────────────────────────
+  document.getElementById('btn-limpiar').addEventListener('click', function () {
+    state.q = '';
+    state.region = 'Todo Chile';
+    document.getElementById('search-input').value = '';
+    document.querySelectorAll('.region-pill').forEach(p => p.classList.remove('active'));
+    const firstPill = document.querySelector('.region-pill');
+    if (firstPill) firstPill.classList.add('active');
+    applyFilters();
+  });
+
+  // ── FAV TOGGLE ─────────────────────────────────────────────────────────────
   document.querySelectorAll('.prop-fav').forEach(fav => {
-    fav.addEventListener('click', function() {
-      this.textContent = this.textContent === '♡' ? '♥' : '♡';
-      this.style.color = this.textContent === '♥' ? 'var(--gold)' : '';
+    fav.addEventListener('click', function () {
+      this.textContent = this.textContent === '\u2661' ? '\u2665' : '\u2661';
+      this.style.color = this.textContent === '\u2665' ? 'var(--gold)' : '';
     });
   });
 
-  document.querySelectorAll('.page-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      if (this.textContent === '‹' || this.textContent === '›') return;
-      document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
-    });
-  });
+  // Initial render
+  applyFilters();
 </script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>

@@ -598,17 +598,16 @@
 
 <script src="properties-data.js"></script>
 <script>
-  // ── TABS ───────────────────────────────────────────────────────────────────
-  function setTab(el) {
-    document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-  }
-
-  // ── BUILD LUGARES FROM REAL DATA ───────────────────────────────────────────
-  function buildLugares() {
+  // ── BUILD LUGARES FROM REAL DATA (filtered by mode) ───────────────────────
+  function buildLugares(mode) {
     if (typeof PROPS_DATA === 'undefined') return [];
     const set = new Set();
-    PROPS_DATA.forEach(function(p) {
+    PROPS_DATA.filter(function(p) {
+      if (mode === 'Comprar')   return p.op === 'Venta';
+      if (mode === 'Arrendar')  return p.op === 'Arriendo' || p.op === 'Arriendo Temporal';
+      if (mode === 'Comercial') return p.tipo === 'Oficina' || p.tipo === 'Local';
+      return true;
+    }).forEach(function(p) {
       set.add(p.ciudad);
       p.loc.split(',').forEach(function(part) {
         var clean = part.trim().replace(/^[0-9\s\-\.]+/, '').trim();
@@ -617,7 +616,26 @@
     });
     return Array.from(set).sort(function(a,b) { return a.localeCompare(b, 'es'); });
   }
-  var LUGARES = buildLugares();
+
+  function getActiveMode() {
+    const activeTab = document.querySelector('.search-tab.active');
+    return activeTab ? activeTab.textContent.trim() : 'Comprar';
+  }
+
+  // ── TABS ───────────────────────────────────────────────────────────────────
+  function setTab(el) {
+    document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    // refresh autocomplete suggestions for the new mode
+    const val = document.getElementById('searchInput').value.trim();
+    if (val) {
+      const norm = normalize(val);
+      const matches = buildLugares(el.textContent.trim()).filter(l => normalize(l).includes(norm)).slice(0, 8);
+      renderDropdown(matches);
+    } else {
+      document.getElementById('autocompleteDropdown').classList.remove('open');
+    }
+  }
 
   // ── SEARCH + REDIRECT ──────────────────────────────────────────────────────
   function doSearch(query) {
@@ -666,7 +684,7 @@
     const val = searchInput.value.trim();
     if (!val) { dropdown.classList.remove('open'); return; }
     const norm    = normalize(val);
-    const matches = LUGARES.filter(l => normalize(l).includes(norm)).slice(0, 8);
+    const matches = buildLugares(getActiveMode()).filter(l => normalize(l).includes(norm)).slice(0, 8);
     renderDropdown(matches);
   });
 

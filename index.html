@@ -608,15 +608,16 @@
   function buildLugares() {
     if (typeof PROPS_DATA === 'undefined') return [];
     const set = new Set();
-    PROPS_DATA.forEach(p => {
+    PROPS_DATA.forEach(function(p) {
       set.add(p.ciudad);
-      p.loc.split(',').forEach(part => {
-        const clean = part.trim().replace(/^[ds-.]+/, '').trim();
-        if (clean.length > 3 && !/^d/.test(clean)) set.add(clean);
+      p.loc.split(',').forEach(function(part) {
+        var clean = part.trim().replace(/^[0-9\s\-\.]+/, '').trim();
+        if (clean.length > 3 && isNaN(parseInt(clean[0]))) set.add(clean);
       });
     });
-    return [...set].sort((a,b) => a.localeCompare(b, 'es'));
+    return Array.from(set).sort(function(a,b) { return a.localeCompare(b, 'es'); });
   }
+  var LUGARES = buildLugares();
 
   // ── SEARCH + REDIRECT ──────────────────────────────────────────────────────
   function doSearch(query) {
@@ -630,14 +631,12 @@
 
   // ── AUTOCOMPLETE ───────────────────────────────────────────────────────────
   function normalize(str) {
-    return str.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
 
   const searchInput = document.getElementById('searchInput');
   const dropdown    = document.getElementById('autocompleteDropdown');
   let activeIndex   = -1;
-  let LUGARES = [];
-  setTimeout(() => { LUGARES = buildLugares(); }, 0);
 
   function renderDropdown(matches) {
     if (!matches.length) { dropdown.classList.remove('open'); return; }

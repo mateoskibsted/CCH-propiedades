@@ -242,6 +242,7 @@
     .page-btn:hover { border-color: var(--gold); color: var(--gold); }
     .page-btn.active { background: var(--gold); color: var(--black); border-color: var(--gold); font-weight: 600; }
     .page-dots { font-size: 0.7rem; color: var(--white-dim); padding: 0 8px; }
+    .page-info { font-size: 0.65rem; letter-spacing: 0.15em; color: var(--white-dim); padding: 0 8px; }
 
     /* OFFICES SECTION */
     .offices-section {
@@ -721,11 +722,6 @@
       <div style="font-size:0.7rem;letter-spacing:0.12em;color:var(--white-dim);">No encontramos propiedades con estos filtros.</div>
       <button onclick="document.getElementById('btn-limpiar').click()" style="margin-top:12px;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;padding:10px 24px;border:1px solid rgba(201,168,76,0.3);color:var(--gold);background:transparent;cursor:pointer;font-family:var(--sans);">Limpiar filtros</button>
     </div>
-
-    <!-- SAVE SEARCH BANNER -->
-    <div class="save-banner" style="grid-column: 1 / -1;">
-      <div>
-        <div class="save-banner-text">Infórmate antes que los demás</div>
         <div class="save-banner-sub">Guarda tu búsqueda y recibe alertas de nuevas propiedades que coincidan.</div>
       </div>
       <button class="save-btn">Guardar búsqueda</button>
@@ -734,14 +730,7 @@
   </div>
   <!-- PAGINATION -->
   <div class="pagination">
-    <button class="page-btn">‹</button>
-    <button class="page-btn active">1</button>
-    <button class="page-btn">2</button>
-    <button class="page-btn">3</button>
-    <button class="page-btn">4</button>
-    <span class="page-dots">...</span>
-    <button class="page-btn">71</button>
-    <button class="page-btn">›</button>
+    <span class="page-info">Página 1</span>
   </div>
 </div><!-- /props-col -->
 <div class="map-col"><div id="map"></div></div>
@@ -815,270 +804,10 @@
   </div>
 </footer>
 
+<script src="properties-data.js"></script>
 <script>
-  // ── MASTER PROPERTY DATA ─────────────────────────────────────────
-  const PROPS = [
-  {
-    "name": "Casa Oficina Pasos Metro Escuela Militar",
-    "op": "Venta",
-    "tipo": "Oficina",
-    "loc": "Asturias 178, Las Condes",
-    "region": "Región Metropolitana",
-    "priceUf": 15520,
-    "rooms": 6,
-    "lat": -33.4169,
-    "lng": -70.5775,
-    "price": "UF 15.520",
-    "url": "https://www.portalinmobiliario.com/MLC-1592676449-casa-oficina-pasos-metro-escuela-milita5r-_JM"
-  },
-  {
-    "name": "Remodelado Camino Real Los Trapenses",
-    "op": "Venta",
-    "tipo": "Depto",
-    "loc": "Cam. Real, Lo Barnechea",
-    "region": "Región Metropolitana",
-    "priceUf": 23990,
-    "rooms": 4,
-    "lat": -33.3502,
-    "lng": -70.5398,
-    "price": "UF 23.990",
-    "url": "https://www.portalinmobiliario.com/MLC-1593680953-remodelado-camino-real-los-trapenses-_JM"
-  },
-  {
-    "name": "Oficina Nueva Edificio Transoceánica",
-    "op": "Venta",
-    "tipo": "Oficina",
-    "loc": "Santa María de Manquehue, Vitacura",
-    "region": "Región Metropolitana",
-    "priceUf": 18000,
-    "rooms": 0,
-    "lat": -33.385,
-    "lng": -70.5613,
-    "price": "UF 18.000+IVA",
-    "url": "https://www.portalinmobiliario.com/MLC-1627651493-oficina-nueva-edificio-transoceanica-_JM"
-  },
-  {
-    "name": "Increíble Casa Vista Club de Golf del Polo",
-    "op": "Venta",
-    "tipo": "Casa",
-    "loc": "Cam. Bosques del Polo, Vitacura",
-    "region": "Región Metropolitana",
-    "priceUf": 92000,
-    "rooms": 4,
-    "lat": -33.378,
-    "lng": -70.552,
-    "price": "UF 92.000",
-    "url": "https://www.portalinmobiliario.com/MLC-1641589381-increible-casa-santa-maria-con-vista-club-de-golf-del-polo-_JM"
-  },
-  {
-    "name": "Gran Departamento Santa María Manquehue",
-    "op": "Venta",
-    "tipo": "Depto",
-    "loc": "Parque Antonio Rabat 6390, Vitacura",
-    "region": "Región Metropolitana",
-    "priceUf": 29000,
-    "rooms": 3,
-    "lat": -33.3795,
-    "lng": -70.554,
-    "price": "UF 29.000",
-    "url": "https://www.portalinmobiliario.com/MLC-1645801945-gran-departamento-santa-maria-manquehue-_JM"
-  },
-  {
-    "name": "Departamento Hamlet Metro Escuela Militar",
-    "op": "Venta",
-    "tipo": "Depto",
-    "loc": "Hamlet, Las Condes",
-    "region": "Región Metropolitana",
-    "priceUf": 6900,
-    "rooms": 2,
-    "lat": -33.418,
-    "lng": -70.579,
-    "price": "UF 6.900",
-    "url": "https://www.portalinmobiliario.com/MLC-1661956889-departamento-hamblet-a-1-cuadra-metro-escuela-militar-_JM"
-  },
-  {
-    "name": "Casa Pueblo Cachagua Impecable",
-    "op": "Venta",
-    "tipo": "Casa",
-    "loc": "Del Cerrillo, Cachagua, Zapallar",
-    "region": "Valparaíso",
-    "priceUf": 18500,
-    "rooms": 4,
-    "lat": -32.558,
-    "lng": -71.456,
-    "price": "UF 18.500",
-    "url": "https://www.portalinmobiliario.com/MLC-1683487135-casa-pueblo-cachagua-impecable-_JM"
-  },
-  {
-    "name": "Oportunidad Casa Comercial Metro Manquehue",
-    "op": "Venta",
-    "tipo": "Oficina",
-    "loc": "Rosario Sur 310, Las Condes",
-    "region": "Región Metropolitana",
-    "priceUf": 12800,
-    "rooms": 4,
-    "lat": -33.405,
-    "lng": -70.57,
-    "price": "UF 12.800",
-    "url": "https://www.portalinmobiliario.com/MLC-1723916145-oportunidad-casa-comercial-metro-manquehue-_JM"
-  },
-  {
-    "name": "Townhouse Camino Real Los Trapenses",
-    "op": "Venta",
-    "tipo": "Depto",
-    "loc": "Cam. Real 3663, Lo Barnechea",
-    "region": "Región Metropolitana",
-    "priceUf": 24000,
-    "rooms": 4,
-    "lat": -33.3498,
-    "lng": -70.5401,
-    "price": "UF 24.000",
-    "url": "https://www.portalinmobiliario.com/MLC-1741775893-townhouse-camino-real-los-trapenses-_JM"
-  },
-  {
-    "name": "Casa Mediterránea Los Trapenses Linda Vista",
-    "op": "Venta",
-    "tipo": "Casa",
-    "loc": "Cam. Punta de Águila 4371, Lo Barnechea",
-    "region": "Región Metropolitana",
-    "priceUf": 28800,
-    "rooms": 5,
-    "lat": -33.352,
-    "lng": -70.542,
-    "price": "UF 28.800",
-    "url": "https://www.portalinmobiliario.com/MLC-1741917939-casa-mediterranea-los-trapenses-linda-vista-_JM"
-  },
-  {
-    "name": "Linda Casa Estilo Inglés en Condominio",
-    "op": "Venta",
-    "tipo": "Casa",
-    "loc": "El Magnolio 1519, Vitacura",
-    "region": "Región Metropolitana",
-    "priceUf": 17900,
-    "rooms": 3,
-    "lat": -33.392,
-    "lng": -70.578,
-    "price": "UF 17.900",
-    "url": "https://www.portalinmobiliario.com/MLC-1769943977-linda-casa-estilo-ingles-en-condomio-_JM"
-  },
-  {
-    "name": "Departamento Bellavista Providencia",
-    "op": "Venta",
-    "tipo": "Depto",
-    "loc": "Av. Santa María 0346, Providencia",
-    "region": "Región Metropolitana",
-    "priceUf": 3900,
-    "rooms": 1,
-    "lat": -33.427,
-    "lng": -70.631,
-    "price": "UF 3.900",
-    "url": "https://www.portalinmobiliario.com/MLC-1857227891-departamento-en-venta-en-bellavista-providencia-_JM"
-  },
-  {
-    "name": "Dúplex Remodelado Super Moderno y Luminoso",
-    "op": "Venta",
-    "tipo": "Depto",
-    "loc": "Costanera Sur, Vitacura",
-    "region": "Región Metropolitana",
-    "priceUf": 12000,
-    "rooms": 3,
-    "lat": -33.405,
-    "lng": -70.598,
-    "price": "UF 12.000",
-    "url": "https://www.portalinmobiliario.com/MLC-1872742263-duplex-remodelado-super-moderno-y-luminos-_JM"
-  },
-  {
-    "name": "Moderno Departamento Mariposa Lyon",
-    "op": "Arriendo",
-    "tipo": "Depto",
-    "loc": "Concordia 2245, Providencia",
-    "region": "Región Metropolitana",
-    "priceUf": 33,
-    "rooms": 2,
-    "lat": -33.429,
-    "lng": -70.615,
-    "price": "UF 33 /mes",
-    "url": "https://www.portalinmobiliario.com/MLC-1910927117-moderno-departamento-mariposa-lyon-_JM"
-  },
-  {
-    "name": "Buen Departamento Carmen Silva Providencia",
-    "op": "Venta",
-    "tipo": "Depto",
-    "loc": "Carmen Sylva 2400, Providencia",
-    "region": "Región Metropolitana",
-    "priceUf": 9400,
-    "rooms": 4,
-    "lat": -33.431,
-    "lng": -70.608,
-    "price": "UF 9.400",
-    "url": "https://www.portalinmobiliario.com/MLC-2889223556-buen-departamento-carmen-silva-providencia-_JM"
-  },
-  {
-    "name": "Local Las Tranqueras Gran Terraza",
-    "op": "Arriendo",
-    "tipo": "Local",
-    "loc": "Las Tranqueras 1594, Vitacura",
-    "region": "Región Metropolitana",
-    "priceUf": 40,
-    "rooms": 0,
-    "lat": -33.398,
-    "lng": -70.582,
-    "price": "UF 40 /mes",
-    "url": "https://www.portalinmobiliario.com/MLC-3114604620-local-las-tranqueras-gran-terraza-y-estacionamientos-_JM"
-  },
-  {
-    "name": "Oficinas y Talleres Nueva Costanera",
-    "op": "Arriendo",
-    "tipo": "Oficina",
-    "loc": "Juan B. Pastene 2965, Vitacura",
-    "region": "Región Metropolitana",
-    "priceUf": 14,
-    "rooms": 0,
-    "lat": -33.401,
-    "lng": -70.595,
-    "price": "UF 14 /mes",
-    "url": "https://www.portalinmobiliario.com/MLC-3375816606-se-arriendan-oficinas-y-talleres-nueva-costanera-_JM"
-  },
-  {
-    "name": "Casa Cachagua a 800 Metros Playa Grande",
-    "op": "Arriendo Temporal",
-    "tipo": "Casa",
-    "loc": "Cachagua, Zapallar",
-    "region": "Valparaíso",
-    "priceUf": 0,
-    "rooms": 4,
-    "lat": -32.56,
-    "lng": -71.458,
-    "price": "$1.600.000 /mes",
-    "url": "https://www.portalinmobiliario.com/MLC-3436911148-casa-cachagua-a-800-metros-de-la-playa-grande-_JM"
-  },
-  {
-    "name": "Elegante Depto Vista Club de Golf Los Leones",
-    "op": "Venta",
-    "tipo": "Depto",
-    "loc": "Paul Claudel 1125, Vitacura",
-    "region": "Región Metropolitana",
-    "priceUf": 18900,
-    "rooms": 3,
-    "lat": -33.402,
-    "lng": -70.59,
-    "price": "UF 18.900",
-    "url": "https://www.portalinmobiliario.com/MLC-3437307930-elegante-depto-vista-despejada-club-de-golf-los-leones-_JM"
-  },
-  {
-    "name": "Espectacular Terreno con Anteproyecto",
-    "op": "Venta",
-    "tipo": "Terreno",
-    "loc": "Álvaro Casanova 4812, Peñalolén",
-    "region": "Región Metropolitana",
-    "priceUf": 120000,
-    "rooms": 0,
-    "lat": -33.485,
-    "lng": -70.532,
-    "price": "UF 120.000",
-    "url": "https://www.portalinmobiliario.com/MLC-2926526120-espectacular-terreno-con-ante-proyecto-de-arquitectura-_JM"
-  }
-];
+  // ── MASTER PROPERTY DATA (from properties-data.js) ──
+  const PROPS = PROPS_DATA;
 
   const uniqueRegions = ["Todo Chile", ...new Set(PROPS.map(p => p.region))];
   const pillsContainer = document.getElementById("region-pills-container");

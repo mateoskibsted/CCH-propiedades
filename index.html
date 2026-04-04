@@ -285,19 +285,11 @@
 <!-- STATS -->
 <div class="stats-bar">
   <div class="stat-item">
-    <div class="stat-num">+850</div>
+    <div class="stat-num" id="stat-propiedades">20</div>
     <div class="stat-label">Propiedades disponibles</div>
   </div>
   <div class="stat-item">
-    <div class="stat-num">+12</div>
-    <div class="stat-label">Años de experiencia</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">+2.400</div>
-    <div class="stat-label">Clientes satisfechos</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">15+</div>
+    <div class="stat-num" id="stat-ciudades">2</div>
     <div class="stat-label">Ciudades en Chile</div>
   </div>
 </div>
@@ -707,6 +699,15 @@
     const nav = document.querySelector('nav');
     nav.style.background = window.scrollY > 60 ? 'rgba(10,10,10,0.98)' : 'rgba(10,10,10,0.92)';
   });
+  // Dynamic stats from PROPS_DATA
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof PROPS_DATA === 'undefined') return;
+    const el_p = document.getElementById('stat-propiedades');
+    const el_c = document.getElementById('stat-ciudades');
+    if (el_p) el_p.textContent = PROPS_DATA.length;
+    if (el_c) el_c.textContent = new Set(PROPS_DATA.map(p => p.ciudad)).size;
+  });
 </script>
+<script src="properties-data.js"></script>
 </body>
 </html>

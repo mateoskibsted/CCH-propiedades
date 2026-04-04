@@ -596,6 +596,7 @@
   </div>
 </footer>
 
+<script src="properties-data.js"></script>
 <script>
   // ── TABS ───────────────────────────────────────────────────────────────────
   function setTab(el) {
@@ -635,7 +636,8 @@
   const searchInput = document.getElementById('searchInput');
   const dropdown    = document.getElementById('autocompleteDropdown');
   let activeIndex   = -1;
-  const LUGARES     = buildLugares();
+  let LUGARES = [];
+  setTimeout(() => { LUGARES = buildLugares(); }, 0);
 
   function renderDropdown(matches) {
     if (!matches.length) { dropdown.classList.remove('open'); return; }
@@ -713,14 +715,20 @@
     entries.forEach(e => {
       if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
     });
-  }, { threshold: 0.12 });
+  }, { threshold: 0.05 });
   reveals.forEach(r => observer.observe(r));
+  // Force-reveal elements already in viewport on load
+  setTimeout(() => {
+    reveals.forEach(r => {
+      const rect = r.getBoundingClientRect();
+      if (rect.top < window.innerHeight) r.classList.add('visible');
+    });
+  }, 100);
 
   window.addEventListener('scroll', () => {
     const nav = document.querySelector('nav');
     nav.style.background = window.scrollY > 60 ? 'rgba(10,10,10,0.98)' : 'rgba(10,10,10,0.92)';
   });
 </script>
-<script src="properties-data.js"></script>
 </body>
 </html>
